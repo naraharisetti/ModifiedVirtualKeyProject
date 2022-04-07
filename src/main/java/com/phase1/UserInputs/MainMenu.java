@@ -1,22 +1,24 @@
-package org.example.virtualkey.screens;
-
-import org.example.virtualkey.services.DirectoryService;
-import org.example.virtualkey.services.ScreenService;
+package com.phase1.UserInputs;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import com.phase1.FirstPage.ApplicationFirstPage;
+import com.phase1.ManageFiles.FileHandling;
 
+public class MainMenu implements Screen {
 
-public class WelcomeScreen implements Screen {
-
-    private String welcomeText = "Welcome to VirtualKey!";
-    private String developerText = "Developer: Melvin Wu";
+    private String welcomeText = 
+    		  "***********************************\n"
+    		+ "*** Welcome to Lockers Pvt. Ltd *** \n"
+    		+ "**********************************";
+    private String developerText = 
+    		  "*********     Developer   ********\n"
+    		+ "            Naraharisetti \n"
+    		+ "**********************************";
 
     private ArrayList<String> options = new ArrayList<>();
 
-
-    public WelcomeScreen() {
+    
+    public MainMenu() {
         options.add("1. Show Files");
         options.add("2. Show File Options Menu");
         options.add("3. Quit");
@@ -30,8 +32,6 @@ public class WelcomeScreen implements Screen {
         Show();
     }
     
-    
-    
     @Override
     public void Show() {
     	System.out.println("Main Menu");
@@ -41,10 +41,16 @@ public class WelcomeScreen implements Screen {
 
     }
 
+    @Override
     public void GetUserInput() {
         int selectedOption  = 0;
+        
         while ((selectedOption = this.getOption()) != 3) {
-            this.NavigateOption(selectedOption);
+            this.NavigateOption(selectedOption);                
+        }  
+
+        if (selectedOption == 3) {
+        	System.out.println("Successfully Exited the application");
         }
     }
 
@@ -60,43 +66,36 @@ public class WelcomeScreen implements Screen {
                 break;
                 
             case 2: // Show File Options menu
-            	ScreenService.setCurrentScreen(ScreenService.FileOptionsScreen);
-                ScreenService.getCurrentScreen().Show();
-                ScreenService.getCurrentScreen().GetUserInput();
-                
+            	FilesMenu fileOptions = new FilesMenu();
+            	fileOptions.Show();
+            	fileOptions.GetUserInput();
+             
                 this.Show();
                 
                 break;
                 
             default:
-                System.out.println("Invalid Option");
+                System.out.println("Invalid Option. Enter 1, 2 or 3.");
                 break;
-        }
-        
+        }        
     }
 
     public void ShowFiles() {
-
-        //TODO: Get the files from the Directory
-    	
-    	//Finished TODO Task
-
         System.out.println("List of Files: ");
-    	DirectoryService.PrintFiles();
-
+    	FileHandling fileHandling = new FileHandling(); 
+        fileHandling.PrintFiles();    	
     }
-    
-    private int getOption() {
-        Scanner in = new Scanner(System.in);
+       
+    public int getOption() {        
 
         int returnOption = 0;
-        try {
-            returnOption = in.nextInt();
+        
+        try {        	
+        	returnOption = Integer.parseInt(ApplicationFirstPage.in.nextLine());                                    
         }
-        catch (InputMismatchException ex) {
+        catch (Exception ex) {
 
-        }
+        }        
         return returnOption;
-
     }
 }

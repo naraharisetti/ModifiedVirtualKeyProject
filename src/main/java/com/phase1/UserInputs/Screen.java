@@ -1,4 +1,5 @@
-package org.example.virtualkey.screens;
+package com.phase1.UserInputs;
+
 
 public interface Screen {
 

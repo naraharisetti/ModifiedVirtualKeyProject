@@ -1,31 +1,25 @@
-package org.example.virtualkey.screens;
-
+package com.phase1.UserInputs;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import com.phase1.FirstPage.ApplicationFirstPage;
+import com.phase1.ManageFiles.FileHandling;
 
-import org.example.virtualkey.entities.Directory;
-import org.example.virtualkey.services.ScreenService;
-
-
-public class FileOptionsScreen implements Screen {
+public class FilesMenu implements Screen {
 	
-	private Directory dir = new Directory();
+	private FileHandling dir = new FileHandling();
 	
 	private ArrayList<String> options = new ArrayList<>();
 
-    public FileOptionsScreen() {
+    public FilesMenu() {
     	
     	options.add("1. Add a File");
         options.add("2. Delete A File");
         options.add("3. Search A File");
-        options.add("4. Return to Menu");
-        
+        options.add("4. Return to Menu");        
     }
     
     @Override
@@ -34,12 +28,14 @@ public class FileOptionsScreen implements Screen {
         for (String s : options) {
             System.out.println(s);
         }
-
     }
 
     public void GetUserInput() {
         int selectedOption;
-        while ((selectedOption = this.getOption()) != 4) {
+       
+        MainMenu welcomeScreen = new MainMenu(); 
+        
+        while ((selectedOption = welcomeScreen.getOption()) != 4) {
             this.NavigateOption(selectedOption);
         }
     }
@@ -63,28 +59,13 @@ public class FileOptionsScreen implements Screen {
                 this.SearchFile();
                 this.Show();
                 break;
-            
-                /*
-            case 4: // Return to Menu
-            	
-            	ScreenService.setCurrentScreen(ScreenService.WelcomeScreen);
-                ScreenService.getCurrentScreen().Show();
-                ScreenService.getCurrentScreen().GetUserInput();
-                
-                break;
-                */
+                            
             default:
-                System.out.println("Invalid Option");
-                break;
-                
-                
+                System.out.println("Invalid Option. Enter 1, 2, 3 or 4.");
+                break;                               
         }
-
     }
-    
-    //TODO: Add functionality to all 
-    
-    // Finished TODO
+        
 
     public void AddFile() {
         System.out.println("Please Enter the Filename:");
@@ -94,13 +75,11 @@ public class FileOptionsScreen implements Screen {
         System.out.println("You are adding a file named: " + fileName);
         
 		try {
-			Path path = FileSystems.getDefault().getPath(Directory.name + fileName).toAbsolutePath();
-			File file = new File(dir.getName() + fileName);
+			File file = new File(dir.getName() + fileName);			
 			
 		      if (file.createNewFile()) {
 		    	  System.out.println("File created: " + file.getName());
-		    	  dir.getFiles().add(file);
-		    	  
+		    	  dir.filesList().add(file);	
 		      } else {
 		        System.out.println("This File Already Exits, no need to add another");
 		      }
@@ -120,14 +99,11 @@ public class FileOptionsScreen implements Screen {
         System.out.println("You are deleting a file named: " + fileName);
         
         
-	    //TODO: Delete file
-        // Finished TODO
-        
-		Path path = FileSystems.getDefault().getPath(Directory.name + fileName).toAbsolutePath();
+		Path path = FileSystems.getDefault().getPath(FileHandling.name + fileName).toAbsolutePath();
 		File file = path.toFile();
 	      if (file.delete()) {
 	    	  System.out.println("Deleted File: " + file.getName());
-	    	  dir.getFiles().remove(file);
+	    	  dir.filesList().remove(file);	
 	      } else {
 	        System.out.println("Failed to delete file:" + fileName + ", file was not found.");
 	      }
@@ -142,13 +118,10 @@ public class FileOptionsScreen implements Screen {
         String fileName = this.getInputString();
 
         System.out.println("You are searching for a file named: " + fileName);
+                
+        ArrayList<File> files = dir.filesList();
         
-        //TODO Fix it so ArrayList obtains files
-        //Finished TODO
-        
-        ArrayList<File> files = dir.getFiles();
-        
-        
+                
         for(int i = 0; i < files.size(); i++) {
 			if(files.get(i).getName().equals(fileName)) {
 				System.out.println("Found " + fileName);
@@ -160,25 +133,8 @@ public class FileOptionsScreen implements Screen {
         }
     }
     
-    private String getInputString() {
-
-        Scanner in = new Scanner(System.in);
-        return(in.nextLine());
-
+    private String getInputString() {        
+    	String outText=ApplicationFirstPage.in.nextLine();
+        return (outText);
     }
-    
-    private int getOption() {
-        Scanner in = new Scanner(System.in);
-
-        int returnOption = 0;
-        try {
-            returnOption = in.nextInt();
-        }
-        catch (InputMismatchException ex) {
-        	System.out.println("Invalid input");
-        }
-        return returnOption;
-
-    }
-
 }
